@@ -13,17 +13,12 @@ export CLICOLOR=true
 # Default text editor
 # =====================
 export EDITOR="emacsclient -c"
-# export EDITOR="nvim"
-# export GIT_EDITOR='nvim'
-# export VISUAL=$EDITOR
-#export TERM="xterm-256color"
 
 export PAGER='less'
 export LESS='-giAMR'
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-
 
 # Load local sh, export, for example export GOPATH, export JAVA_HOME, export ANDROID_SDK, etc...
 [[ -s "$HOME/.export" ]] && source "$HOME/.export"
@@ -62,6 +57,20 @@ antigen bundle zsh-users/zsh-history-substring-search
 # Tell antigen that you're done
 antigen apply
 
+# emacs vterm shell config, see: https://github.com/akermu/emacs-libvterm
+vterm_printf(){
+    if [ -n "$TMUX" ]; then
+        # Tell tmux to pass the escape sequences through
+        # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
 # LOAD CUSTOM COLORS FOR NVIM/TMUX GRUVBOX THEME ONLY
 #source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 source "$HOME/.local/share/nvim/plugged/gruvbox/gruvbox_256palette.sh"
@@ -75,7 +84,6 @@ HISTFILE=~/.zsh_history         # where to store zsh config
 HISTSIZE=10240000               # big history
 SAVEHIST=10240000               # big history
 LISTMAX=999999
-
 
 # auto-completion with selection / menu / error correction / cache / etc...
 zstyle ':completion:*:*:*:*:*' menu select

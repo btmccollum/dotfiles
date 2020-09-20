@@ -13,6 +13,7 @@ brew "openssl@1.1"
 brew "readline"
 brew "sqlite"
 brew "python@3.8", link: false
+brew "cmake"
 brew "coreutils"
 brew "curl"
 brew "elixir"
