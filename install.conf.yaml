@@ -1,7 +1,15 @@
 - clean: ['~']
 
+- defaults:
+    link:
+      create: true
+      relink: true
+
 - link:
     ~/.bashrc: bashrc
     ~/.gitconfig: gitconfig
 
+- brewfile:
+  # This accepts the same options as `brew bundle` command:
+  file: Brewfile
 
