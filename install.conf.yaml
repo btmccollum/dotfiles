@@ -1,25 +1,23 @@
-- clean: ['~']
-
 - defaults:
     link:
       create: true
       relink: true
-
+- clean: ['~']
 - link:
     ~/.bashrc: bashrc
-    ~/.doom.d:
-      path: doom.d
+    ~/.config/doom: emacs/config
     ~/.gitconfig: gitconfig
-    ~/.tmux.conf:
-      relink: true
-      path: tmux.conf
-    ~/.vimrc:
-      relink: true
-      path: vimrc
+    ~/.gitignore: gitignore
+    ~/.tmux.conf: tmux.conf
+    ~/.vimrc: vimrc
     ~/.zshrc:
+      relink: true
       path: zshrc
-
 - brewfile:
-  # This accepts the same options as `brew bundle` command:
-  file: Brewfile
+  - Brewfile
+- shell:
+    - ["mkdir -p $HOME/dev", "Preparing workspace"]
+    - ['sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"', "Installing oh-my-zsh"]
+
+
 
