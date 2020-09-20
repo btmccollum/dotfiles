@@ -7,7 +7,18 @@
 
 - link:
     ~/.bashrc: bashrc
+    ~/.doom.d:
+      path: doom.d
     ~/.gitconfig: gitconfig
+    ~/.tmux.conf:
+      relink: true
+      path: tmux.conf
+    ~/.vimrc:
+      relink: true
+      path: vimrc
+    ~/.zshrc:
+      force: true
+      path: zshrc
 
 - brewfile:
   # This accepts the same options as `brew bundle` command:
