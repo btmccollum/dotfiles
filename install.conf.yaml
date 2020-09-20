@@ -2,7 +2,6 @@
     link:
       create: true
       relink: true
-- clean: ['~']
 - link:
     ~/.bashrc: bashrc
     ~/.config/doom: emacs/config
@@ -13,11 +12,10 @@
     ~/.zshrc:
       relink: true
       path: zshrc
+- clean: ['~']
 - brewfile:
   - Brewfile
 - shell:
     - ["mkdir -p $HOME/dev", "Preparing workspace"]
     - ['sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"', "Installing oh-my-zsh"]
-
-
-
+    - ["wget https://get.rvm.io | bash -s stable --ruby", "Installing RVM and stable Ruby"]
