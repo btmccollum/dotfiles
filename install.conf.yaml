@@ -17,7 +17,6 @@
       relink: true
       path: vimrc
     ~/.zshrc:
-      force: true
       path: zshrc
 
 - brewfile:
