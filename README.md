@@ -28,7 +28,7 @@ is done at your own discretion.
 Install with the following command:
 
 ```
-git clone https://github.com/btmccollum/dotfiles.git && cd ~/.dotfiles && ./install
+git clone https://github.com/btmccollum/dotfiles.git && cd ~/dotfiles && ./install
 ```
 
 ### vimrc
