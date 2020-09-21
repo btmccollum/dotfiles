@@ -1,13 +1,21 @@
-# zsh, oh-my-zsh, antigen setup for mac
-# on mac you need to install:
-# brew install zsh antigen zsh-completions
-# find more information @ https://meabed.com/zsh-oh-my-zsh-up-and-running
-
 source /usr/local/share/antigen/antigen.zsh
+
+# environment variables
+source ~/.zsh_env_vars
 
 export PATH="/Applications/MacPorts/Emacs.app/Contents/MacOS:$PATH"
 export LSCOLORS='exfxcxdxbxegedabagacad'
 export CLICOLOR=true
+
+# Enable FZF to work with zsh
+export FZF_BASE="$HOME/.fzf"
+export FZF_DEFAULT_OPTS='
+  --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
+  --color info:108,prompt:109,spinner:108,pointer:168,marker:168
+'
+
+# Ignore experimental / deprecation warnings in console
+export RUBYOPT='-W:no-deprecated -W:no-experimental'
 
 # =====================
 # Default text editor
@@ -19,6 +27,9 @@ export LESS='-giAMR'
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+# Alias for zsh dotfile reload:
+alias zshreload="source ~/.zshrc"
 
 # Load local sh, export, for example export GOPATH, export JAVA_HOME, export ANDROID_SDK, etc...
 [[ -s "$HOME/.export" ]] && source "$HOME/.export"
