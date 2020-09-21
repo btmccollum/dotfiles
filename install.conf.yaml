@@ -17,6 +17,7 @@
   - Brewfile
 - shell:
     - ["mkdir -p $HOME/dev", "Preparing workspace"]
+    - ["touch ~/.zsh_env_vars", "Creating env file"]
     - ["git submodule update --init --recursive", "Installing submodules"]
     - ['sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"', "Installing oh-my-zsh"]
     - ["wget https://get.rvm.io | bash -s stable --ruby", "Installing RVM and stable Ruby"]
