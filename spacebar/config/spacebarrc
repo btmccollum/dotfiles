@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+
+spacebar -m config position           top
+spacebar -m config height             28
+# spacebar -m config spacing_left       25
+# spacebar -m config spacing_right      15
+spacebar -m config text_font          "ProggyCleanTT Nerd Font:Book:14.0"
+spacebar -m config icon_font          "Hack Nerd Font:Regular:14.0"
+# spacebar -m config background_color   0xff202020
+# spacebar -m config foreground_color   0xffa8a8a8
+# spacebar -m config space_icon_color   0xff458588
+# spacebar -m config power_icon_color   0xffcd950c
+# spacebar -m config battery_icon_color 0xffd75f5f
+# spacebar -m config dnd_icon_color     0xffa8a8a8
+# spacebar -m config clock_icon_color   0xfff37f97
+spacebar -m config background_color   0xff1d1f28
+spacebar -m config foreground_color   0xfff0f0f0
+spacebar -m config space_icon_color   0xff18e3c8
+spacebar -m config power_icon_color   0xfff2a272
+spacebar -m config battery_icon_color 0xff22ff8b
+spacebar -m config dnd_icon_color     0xfff2a272
+spacebar -m config clock_icon_color   0xfff37f97
+spacebar -m config space_icon_strip   I II III IV V VI VII VIII IX X
+# spacebar -m config space_icon_strip       
+# spacebar -m config power_icon_strip    
+spacebar -m config space_icon         
+spacebar -m config clock_icon         
+spacebar -m config dnd_icon           
+spacebar -m config clock_format       "%m/%d (%a) %R"
+
+# update battery loop from wiki
+# https://github.com/koekeishiya/yabai/wiki/Tips-and-tricks#updating-battery-icon-in-status-bar-based-on-battery-level
+function update_battery_loop() {
+	while true; do
+		# Get the current battery percentage.
+		battery=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
+
+		if [ $battery -gt 84 ]; then
+			spacebar -m config power_icon_strip  
+		elif [ $battery -gt 60 ]; then
+			spacebar -m config power_icon_strip  
+		elif [ $battery -gt 39 ]; then
+			spacebar -m config power_icon_strip  
+		elif [ $battery -gt 14 ]; then
+			spacebar -m config power_icon_strip  
+		else
+			spacebar -m config power_icon_strip  
+		fi
+
+		# wait 5 seconds
+		sleep 5
+	done
+}
+# run the function async
+update_battery_loop &
+
+echo "spacebar configuration loaded.."

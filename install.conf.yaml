@@ -5,10 +5,13 @@
 - link:
     ~/.bashrc: bashrc
     ~/.config/doom: emacs/config
+    ~/.config/spacebar/spacebarrc: spacebar/config
+    ~/.config/yabai/yabairc: yabai/config
     ~/.gitconfig: gitconfig
     ~/.gitignore: gitignore
     ~/.tmux.conf: tmux.conf
     ~/.vimrc: vimrc
+    ~/.yabairc: yabairc
     ~/.zshrc:
       relink: true
       path: zshrc
