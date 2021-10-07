@@ -6,9 +6,22 @@
 ;; use 'M-x doom/reload'.
 
 
-;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+; ; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
+(package! rspec-mode
+  :recipe (:host github :repo "pezra/rspec-mode")) ;; improved rspec editing mode
+(package! js2-mode
+  :recipe (:host github :repo "mooz/js2-mode")) ;; improved javascript editing mode
+(package! rjsx-mode
+  :recipe (:host github :repo "felipeochoa/rjsx-mode")) ;; better support for jsx syntax
+(package! flycheck
+  :recipe (:host github :repo "flycheck/flycheck")) ;; on the fly syntax checking
+(package! cl-libify
+  :recipe (:host github :repo "purcell/cl-libify")) ;; avoid using deprecated cl lib
 
+
+(unpin! org-roam)
+(unpin! :lang)
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format

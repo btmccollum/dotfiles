@@ -1,9 +1,15 @@
+# zsh, oh-my-zsh, antigen setup for mac
+# on mac you need to install:
+# brew install zsh antigen zsh-completions
+# find more information @ https://meabed.com/zsh-oh-my-zsh-up-and-running
 source /usr/local/share/antigen/antigen.zsh
 
 # environment variables
 source ~/.zsh_env_vars
 
 export PATH="/Applications/MacPorts/Emacs.app/Contents/MacOS:$PATH"
+PATH="$HOME/.emacs.d/bin:$PATH"
+PATH="/usr/local/sbin:$PATH"
 export LSCOLORS='exfxcxdxbxegedabagacad'
 export CLICOLOR=true
 
@@ -21,6 +27,7 @@ export RUBYOPT='-W:no-deprecated -W:no-experimental'
 # Default text editor
 # =====================
 export EDITOR="emacsclient -c"
+export ALTERNATE_EDITOR='nvim'
 
 export PAGER='less'
 export LESS='-giAMR'
@@ -29,7 +36,11 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Alias for zsh dotfile reload:
-alias zshreload="source ~/.zshrc"
+alias zshreload="omz reload"
+
+# Alias for work commands:
+alias build_local="bundle && yarn clean && yarn && puma restart"
+alias run_fe_checks="yarn test -u && yarn run lint --fix && yarn run lint:css"
 
 # Load local sh, export, for example export GOPATH, export JAVA_HOME, export ANDROID_SDK, etc...
 [[ -s "$HOME/.export" ]] && source "$HOME/.export"
@@ -43,11 +54,10 @@ antigen use oh-my-zsh
 # bundle antigen zsh plugins @ https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins
 antigen bundles <<EOBUNDLES
 	common-aliases
-	history 
-	git 
-	docker 
-	zsh_reload 
-	autojump 
+	history
+	git
+	docker
+	autojump
 	zsh-users/zsh-completions
 	zsh-users/zsh-autosuggestions
   unixorn/autoupdate-antigen.zshplugin
@@ -105,7 +115,7 @@ zstyle ':completion:*' substitute 0
 zstyle ':completion:*' max-errors 2 not-numeric
 zstyle ':completion:*' original true
 zstyle ':completion:*' use-cache true
-zstyle ':completion:*' cache-path ~/.zsh/cache              
+zstyle ':completion:*' cache-path ~/.zsh/cache
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' file-sort links reverse
 zstyle ':completion:*:commands' rehash true
@@ -133,3 +143,6 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export PATH="/usr/local/opt/postgresql@11/bin:$PATH"
+# export path+=/usr/local/opt/postgresql@11/bin:$PATH
+export PATH="/usr/local/sbin:$PATH"
