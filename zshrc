@@ -13,21 +13,26 @@ PATH="/usr/local/sbin:$PATH"
 export LSCOLORS='exfxcxdxbxegedabagacad'
 export CLICOLOR=true
 
+
 # Enable FZF to work with zsh
 export FZF_BASE="$HOME/.fzf"
 export FZF_DEFAULT_OPTS='
   --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
   --color info:108,prompt:109,spinner:108,pointer:168,marker:168
 '
-
-# Ignore experimental / deprecation warnings in console
-export RUBYOPT='-W:no-deprecated -W:no-experimental'
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # =====================
 # Default text editor
 # =====================
-export EDITOR="emacsclient -c"
-export ALTERNATE_EDITOR='nvim'
+
+export EDITOR="nvim"
+
+# When using doom emacs
+# export EDITOR="emacsclient -c"
+# export ALTERNATE_EDITOR='nvim'
 
 export PAGER='less'
 export LESS='-giAMR'
@@ -92,9 +97,6 @@ vterm_printf(){
     fi
 }
 
-# LOAD CUSTOM COLORS FOR NVIM/TMUX GRUVBOX THEME ONLY
-#source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
-source "$HOME/.local/share/nvim/plugged/gruvbox/gruvbox_256palette.sh"
 # bind keys
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -144,5 +146,10 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH="/usr/local/opt/postgresql@11/bin:$PATH"
-# export path+=/usr/local/opt/postgresql@11/bin:$PATH
 export PATH="/usr/local/sbin:$PATH"
+
+# PATH=”$HOME/.emacs.d/bin:$PATH”
+PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/arm-gcc-bin@8/bin:$PATH"
+export PATH="/usr/local/opt/avr-gcc@8/bin:$PATH"

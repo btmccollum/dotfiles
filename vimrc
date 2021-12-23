@@ -14,8 +14,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'christoomey/vim-tmux-navigator'
 
 " fzf install and plugin
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
 Plug 'skammer/vim-css-color' " Preview CSS colors
 
@@ -58,16 +57,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin' " show which files have changes since last co
 " vim themes =======
 
 Plug 'morhetz/gruvbox'
-
-Plug 'https://github.com/chriskempson/tomorrow-theme'
-
-Plug 'https://github.com/nanotech/jellybeans.vim'
-
-Plug 'dracula/vim', { 'as': 'dracula' }
-
-Plug 'jacoborus/tender.vim'
-
-Plug 'tomasr/molokai'
 
 " end vim themes ===
 
@@ -168,6 +157,22 @@ set listchars=tab:▸\ ,eol:¬
 " more natural splits, move split panes to right and bottom
 set splitbelow
 set splitright
+
+" =======================================================================
+" COLOR SCHEME / THEME
+" =======================================================================
+
+" see options: https://github.com/morhetz/gruvbox/wiki/Configuration
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
+set guifont=Mononoki_Nerd_Font:h11
+set background=light
+
+let g:gruvbox_contrast_light='hard'
+let g:gruvbox_italic=1
+
+autocmd vimenter * ++nested colorscheme gruvbox
+
 
 " ========================================================================
 " fzf setup
@@ -337,35 +342,25 @@ autocmd FileType ruby setlocal commentstring=#\ %s
 " let g:winresizer_start_key = '<leader><c-e>'
 
 " =======================================================================
-" COLOR SCHEME / THEME
+" ALE
 " =======================================================================
 
-" see options: https://github.com/morhetz/gruvbox/wiki/Configuration
-"set guifont=Literation_Mono_Nerd_Font:h11
-"set guifont=Mononoki_Nerd_Font:h11
+" ALE linting events
+" augroup ale
+"   autocmd!
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set termguicolors
-
-" set colorscheme (theme)
-
-let g:molokai_original=1
-
-" colorscheme jellybeans
-colorscheme molokai
-" colorscheme tender
-" colorscheme dracula
-
-
-" colorscheme gruvbox
-" let g:gruvbox_italic=1
-" set hard contrast for dark mode
-" set guifont, MUST BE A NERD FONT for icon display to work
-" set background=dark  "setting drk mode
-" let g:gruvbox_contrast_dark= 'hard'
-" let g:gruvbox_number_column ='bg'
-
-"set guifont=Fira_Code_Nerd_Font:h11
+"   if g:has_async
+"     autocmd VimEnter *
+"       \ set updatetime=1000 |
+"       \ let g:ale_lint_on_text_changed = 0
+"     autocmd CursorHold * call ale#Queue(0)
+"     autocmd CursorHoldI * call ale#Queue(0)
+"     autocmd InsertEnter * call ale#Queue(0)
+"     autocmd InsertLeave * call ale#Queue(0)
+"   else
+"     echoerr "The dotfiles require NeoVim or Vim 8"
+"   endif
+" augroup END
 
 " =======================================================================
 " COC SETUP
@@ -433,8 +428,8 @@ map <leader>a :TestSuite<CR>
 
 nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <c-e> :TmuxNavigateUp<cr>
+nnoremap <silent> <c-i> :TmuxNavigateRight<cr>
 " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
 " ================================================

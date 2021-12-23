@@ -183,7 +183,6 @@
        ;;literate
        (default +bindings +smartparens))
 
-(add-hook 'after-init-hook 'inf-ruby-switch-setup)
 (setq rspec-use-rvm t)
 ;(defadvice rspec-compile (around rspec-compile-around)
 ;  "Use BASH shell for running the specs because of ZSH issues."
@@ -191,6 +190,7 @@
 ;    ad-do-it))
 
 ;(ad-activate 'rspec-compile)
+(global-set-key (kbd "C-c c") 'run-command)
 
 ;; set default window size when opening non-terminal emacs
 (if (display-graphic-p)
@@ -212,4 +212,3 @@
   (progn
     (setq initial-frame-alist '( (tool-bar-lines . 0)))
     (setq default-frame-alist '( (tool-bar-lines . 0)))))
-

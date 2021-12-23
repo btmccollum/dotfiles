@@ -19,9 +19,12 @@
 (package! cl-libify
   :recipe (:host github :repo "purcell/cl-libify")) ;; avoid using deprecated cl lib
 
-
 (unpin! org-roam)
 (unpin! :lang)
+;; ~~~~~~~~~~~~~~~~ MELPA PACKAGES ~~~~~~~~~~~~~~~
+
+(package! run-command
+  :recipe (:host github :repo "bard/emacs-run-command"))
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
