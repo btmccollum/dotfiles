@@ -15,6 +15,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " fzf install and plugin
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 Plug 'skammer/vim-css-color' " Preview CSS colors
 
@@ -40,8 +41,6 @@ Plug 'tpope/vim-commentary' " commenting made easy
 
 Plug 'simeji/winresizer' " easy resize windows with Ctrl E and normal nav keys
 
-Plug 'terryma/vim-multiple-cursors' " enable multiple cursor mode
-
 Plug 'airblade/vim-gitgutter' " https://github.com/airblade/vim-gitgutter
 
 Plug 'janko/vim-test' " like vim-rspec but multi language/test support
@@ -56,7 +55,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin' " show which files have changes since last co
 
 " vim themes =======
 
-Plug 'morhetz/gruvbox'
+Plug 'https://github.com/sainnhe/everforest'
 
 " end vim themes ===
 
@@ -166,20 +165,29 @@ set splitright
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 set guifont=Mononoki_Nerd_Font:h11
-set background=light
+set background=dark
 
-let g:gruvbox_contrast_light='hard'
-let g:gruvbox_italic=1
-
-autocmd vimenter * ++nested colorscheme gruvbox
-
+colorscheme everforest
 
 " ========================================================================
 " fzf setup
 " ========================================================================
 
-"" This is the default extra key bindings
+" This is the default extra key bindings
 let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
@@ -188,12 +196,25 @@ let g:fzf_action = {
 " - down / up / left / right
 let g:fzf_layout = { 'down': '~40%' }
 
-" In Neovim, you can set up fzf window using a Vim command
-" let g:fzf_layout = { 'window': 'enew' }
-" let g:fzf_layout = { 'window': '-tabnew' }
-" let g:fzf_layout = { 'window': '10new' }
+" fzf.vim
+" https://github.com/junegunn/fzf.vim
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
-" Customize fzf colors to match your color scheme
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" temp hide status line when in use
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -201,7 +222,7 @@ let g:fzf_colors =
   \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
   \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
   \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PrePro'],
+  \ 'info':    ['fg', 'PreProc'],
   \ 'border':  ['fg', 'Ignore'],
   \ 'prompt':  ['fg', 'Conditional'],
   \ 'pointer': ['fg', 'Exception'],
@@ -209,33 +230,8 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-" Enable per-command history.
-" CTRL-N and CTRL-P will be automatically bound to next-history and
-" previous-history instead of down and up. If you don't like the change,
-" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
-let g:fzf_history_dir = '~/.local/share/fzf-history'
-
-" Command for git grep
-" - fzf#vim#grep(command, with_column, [options], [fullscreen])
-" command! -bang -nargs=* GGrep
-"   \ call fzf#vim#grep(
-"   \   'git grep --line-number '.shellescape(<q-args>), 0,
-"   \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
-
-" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-" Likewise, Files command with preview window
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-nnoremap <silent> <leader>f :FZF<cr>
-nnoremap <silent> <leader>F :FZF ~<cr>
+nnoremap <silent> <leader>f :RG<cr>
+nnoremap <silent> <leader>F :FZF<cr>
 
 " ========================================================================
 " Ruby stuff
@@ -259,8 +255,10 @@ augroup END
 " =======================================================================
 
 " enable highlighting and whitespace striping on save
-let g:better_whitespace_enabled=1
-let g:strip_whitespace_on_save=1
+let g:better_whitespace_enabled = 1
+let g:strip_whitespace_on_save = 1
+
+let g:strip_max_file_size = 1000
 
 " =======================================================================
 " VIM NAVIGATION
@@ -288,45 +286,87 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 "  COC CONFIG
 " =======================================================================
 
-" Remap keys for gotos
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=200
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" show documentation
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
-nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-" Show all diagnostics
-nnoremap <silent> <space>d :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s :<C-u>CocList -I symbols<cr>
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent> <space>j :<C-u>CocNext<CR>
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
-nnoremap <silent> <space>k :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " =======================================================================
-" POWERLINE
+" POWERLINE / LIGHTLINE
 " =======================================================================
 
 " Fix for powerline bug
 set laststatus=2
+
+let g:lightline = {
+\ 'colorscheme': 'wombat',
+\ 'active': {
+\   'left': [ [ 'mode', 'paste' ],
+\             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+\ },
+\ 'component_function': {
+\   'cocstatus': 'coc#status'
+\ },
+\ }
 
 " =======================================================================
 " VIM COMMENTARY
@@ -335,13 +375,7 @@ set laststatus=2
 noremap \ :Commentary<CR>
 autocmd FileType ruby setlocal commentstring=#\ %s
 
-" =======================================================================
-" VIM COMMENTARY
-" =======================================================================
-
-" let g:winresizer_start_key = '<leader><c-e>'
-
-" =======================================================================
+"" =======================================================================
 " ALE
 " =======================================================================
 
@@ -369,31 +403,6 @@ autocmd FileType ruby setlocal commentstring=#\ %s
 " COC - PRETTIER https://github.com/neoclide/coc-prettier
 
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
-
-
-" =======================================================================
-" VIM-SIGNIFY
-" =======================================================================
-
-" default updatetime 4000ms is not good for async update
-set updatetime=100
-
-" =======================================================================
-" MULTIPLE CURSOR SETTINGS
-" =======================================================================
-
-" " disable plugin setting keybindings automatically
-" let g:multi_cursor_use_default_mapping=0
-
-" " Default mapping
-" let g:multi_cursor_start_word_key      = '<C-n>'
-" let g:multi_cursor_select_all_word_key = '<A-n>'
-" let g:multi_cursor_start_key           = 'g<C-n>'
-" let g:multi_cursor_select_all_key      = 'g<A-n>'
-" let g:multi_cursor_next_key            = '<C-n>'
-" let g:multi_cursor_prev_key            = '<C-p>'
-" let g:multi_cursor_skip_key            = '<C-x>'
-" let g:multi_cursor_quit_key            = '<Esc>'
 
 " =======================================================================
 " VIM TEST CONFIG
