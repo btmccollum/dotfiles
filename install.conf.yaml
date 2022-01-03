@@ -6,7 +6,6 @@
   - Brewfile
 - clean: ['~']
 - link:
-    ~/.bashrc: bashrc
     ~/.config/doom: emacs/config
     ~/.config/fish: 
       force: true
@@ -32,4 +31,7 @@
     - ["touch ~/.env_vars", "Creating env file"]
     - ["git submodule update --init --recursive", "Installing submodules"]
     - ["curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher", "Installing Fisher"]
-    - ["wget https://get.rvm.io | bash -s stable --ruby", "Installing RVM and stable Ruby"]
+    - sh -c 'curl -sSL https://get.rvm.io | bash -s stable --with-default-gems="rails"'
+    - sh -c 'curl -L --create-dirs -o ~/.config/fish/functions/rvm.fish https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish'
+    - ['echo "rvm default" >> ~/.config/fish/config.fish']
+
