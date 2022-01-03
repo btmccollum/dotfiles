@@ -2,25 +2,34 @@
     link:
       create: true
       relink: true
+- brewfile:
+  - Brewfile
+- clean: ['~']
 - link:
     ~/.bashrc: bashrc
     ~/.config/doom: emacs/config
-    ~/.config/spacebar/spacebarrc: spacebar/config
-    ~/.config/yabai/yabairc: yabai/config
+    ~/.config/fish: 
+      force: true
+      path: fish
+    ~/.config/nvim: nvim
     ~/.gitconfig: gitconfig
     ~/.gitignore: gitignore
-    ~/.tmux.conf: tmux.conf
-    ~/.vimrc: vimrc
-    ~/.yabairc: yabairc
-    ~/.zshrc:
+    ~/.tmux.conf: tmux/tmux.conf
+    ~/.vimrc: 
+      create: true
       relink: true
-      path: zshrc
-- clean: ['~']
-- brewfile:
-  - Brewfile
+      path: nvim/init.vim
+    ~/.zshrc: 
+      create: true
+      relink: true
+      path: zsh/zshrc
 - shell:
+    - ["curl -L https://sw.kovidgoyal.net/kitty/installer.sh", "Installing Kitty Terminal"]
+    - ["echo /usr/local/bin/fish | sudo tee -a /etc/shells"]
+    - ["chsh -s /usr/local/bin/fish", "Default Shell: Fish"]
+    - sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     - ["mkdir -p $HOME/dev", "Preparing workspace"]
-    - ["touch ~/.zsh_env_vars", "Creating env file"]
+    - ["touch ~/.env_vars", "Creating env file"]
     - ["git submodule update --init --recursive", "Installing submodules"]
-    - ['sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"', "Installing oh-my-zsh"]
+    - ["curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher", "Installing Fisher"]
     - ["wget https://get.rvm.io | bash -s stable --ruby", "Installing RVM and stable Ruby"]
