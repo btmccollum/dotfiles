@@ -2,8 +2,13 @@
 " Vim-Plug (Plugin Manager) Setup
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" filetype off                  " required
+set nocompatible      " We're running Vim, not Vi!
+
+syntax on             " Enable syntax highlighting
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
 
 " Vim-plug setup
 call plug#begin('~/.local/share/nvim/plugged')
@@ -18,8 +23,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 Plug 'skammer/vim-css-color' " Preview CSS colors
-
-Plug 'dense-analysis/ale' " ALE Linter https://github.com/dense-analysis/ale#usage
 
 Plug 'vim-ruby/vim-ruby'   " Ruby syntax highlighting and support
 
@@ -40,8 +43,6 @@ Plug 'tpope/vim-rails'     " use :E for rails convention (jump to testings specs
 Plug 'tpope/vim-commentary' " commenting made easy
 
 Plug 'simeji/winresizer' " easy resize windows with Ctrl E and normal nav keys
-
-Plug 'airblade/vim-gitgutter' " https://github.com/airblade/vim-gitgutter
 
 Plug 'janko/vim-test' " like vim-rspec but multi language/test support
 
@@ -230,18 +231,19 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-nnoremap <silent> <leader>f :RG<cr>
-nnoremap <silent> <leader>F :FZF<cr>
+nnoremap <silent> <leader>f :GFile<cr>
+nnoremap <silent> <leader>F :Ag<cr>
 
 " ========================================================================
 " Ruby stuff
 " ========================================================================
-
+"
 syntax on                 " Enable syntax highlighting
 
 augroup myfiletypes
   " Clear old autocmds in group
   autocmd!
+  autocmd FileType ruby compiler ruby
   " autoindent with two spaces, always expand tabs
   autocmd FileType ruby,eruby,yaml setlocal ai sw=2 sts=2 et
   autocmd FileType ruby,eruby,yaml setlocal path+=lib
@@ -249,6 +251,8 @@ augroup myfiletypes
   " Make ?s part of words
   autocmd FileType ruby,eruby,yaml setlocal iskeyword+=?
 augroup END
+
+let ruby_spellcheck_strings = 1
 
 " =======================================================================
 " BETTER WHITESPACES
@@ -275,16 +279,22 @@ nnoremap <leader>= :wincmd =<cr>
 "  NERD TREE
 " =======================================================================
 " Open NERDTree on start and autofocus window
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
+" autocmd VimEnter * NERDTree
+" autocmd VimEnter * wincmd p
 map <leader><C-n> :NERDTreeToggle<CR>
 
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
 " Close vim if nerdtree is the only window left open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " =======================================================================
 "  COC CONFIG
 " =======================================================================
+
+set nobackup
+set nowritebackup
 
 " Give more space for displaying messages.
 set cmdheight=2
@@ -298,12 +308,7 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-if has("nvim-0.5.0") || has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=yes
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -409,7 +414,13 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " =======================================================================
 " https://github.com/janko/vim-test
 
-let test#strategy = "basic"
+let test#strategy = "dispatch"
+
+let test#ruby#rspec#options = {
+  \ 'all':   '--backtrace',
+  \ 'suite': '--tag ~slow',
+\}
+let g:dispatch_quickfix_height = 40
 
 " Use vim-rspec bindings for vim-test
 map <leader>h :TestFile<CR>
